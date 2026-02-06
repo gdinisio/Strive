@@ -23,7 +23,6 @@ struct ContentView: View {
                 }
         }
         .tint(AppTheme.accent)
-        .preferredColorScheme(.dark)
     }
 }
 
@@ -62,6 +61,7 @@ struct StartWorkoutView: View {
                                 .fontWeight(.semibold)
                         }
                         .buttonStyle(NeonButtonStyle())
+                        .frame(idealWidth: 260, maxWidth: .infinity)
                         .padding(.top, 4)
 
                         Button(role: .destructive) {
@@ -72,6 +72,7 @@ struct StartWorkoutView: View {
                         }
                         .buttonStyle(OutlineButtonStyle(tint: .red))
                         .tint(.red)
+                        .frame(idealWidth: 260, maxWidth: .infinity)
                         .padding(.top, 8)
                     } else {
                         HeroCard
@@ -175,6 +176,7 @@ struct StartWorkoutView: View {
 struct WorkoutExerciseCard: View {
     let workoutExercise: WorkoutExercise
     let addSet: (Double, Int) -> Void
+    @EnvironmentObject private var store: WorkoutStore
 
     @State private var showAddForm = false
     @State private var weightSelection: Double
@@ -203,6 +205,13 @@ struct WorkoutExerciseCard: View {
                     }
                     Spacer()
                     HStack(spacing: 6) {
+                        Button {
+                            store.removeExerciseFromActive(id: workoutExercise.id)
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                         Text("Add")
                             .font(.caption)
                             .foregroundStyle(AppTheme.faint)
@@ -239,11 +248,20 @@ struct WorkoutExerciseCard: View {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(workoutExercise.sets) { set in
                             HStack {
-                                Text(String(format: "%.1f kg", set.weight))
-                                    .fontWeight(.semibold)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(String(format: "%.1f kg", set.weight))
+                                        .fontWeight(.semibold)
+                                    Text("\(set.reps) reps")
+                                        .foregroundStyle(AppTheme.faint)
+                                }
                                 Spacer()
-                                Text("\(set.reps) reps")
-                                    .foregroundStyle(AppTheme.faint)
+                                Button {
+                                    store.deleteSet(workoutExerciseID: workoutExercise.id, setID: set.id)
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .foregroundStyle(.red)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                             .padding(10)
                             .background(AppTheme.card.opacity(0.6))
@@ -356,7 +374,9 @@ struct ExercisesView: View {
                                 .padding(.leading, 16)
                             LazyVStack(spacing: 10) {
                                 ForEach(exercises) { exercise in
-                                    ExerciseRow(exercise: exercise)
+                                    ExerciseRow(exercise: exercise) {
+                                        store.deleteExercise(exercise.id)
+                                    }
                                 }
                             }
                         }
@@ -369,6 +389,7 @@ struct ExercisesView: View {
 
 struct ExerciseRow: View {
     let exercise: Exercise
+    var onDelete: (() -> Void)?
 
     var body: some View {
         NeonCard {
@@ -388,6 +409,15 @@ struct ExerciseRow: View {
                             .font(.caption)
                             .foregroundStyle(AppTheme.faint)
                     }
+                }
+                Spacer()
+                if let onDelete {
+                    Button(role: .destructive) {
+                        onDelete()
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -479,10 +509,13 @@ struct SessionSummaryCard: View {
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondary)
                 }
-                HStack(spacing: 12) {
-                    StatTile(title: "Exercises", value: "\(exerciseCount)")
+                HStack(spacing: 0) {
+                    StatTile(title: "Count", value: "\(exerciseCount)")
+                        .frame(maxWidth: .infinity)
                     StatTile(title: "Sets", value: "\(setCount)")
-                    StatTile(title: "Started", value: workout.startedAt.formatted(date: .omitted, time: .shortened))
+                        .frame(maxWidth: .infinity)
+                    StatTile(title: "Start", value: workout.startedAt.formatted(date: .omitted, time: .shortened))
+                        .frame(maxWidth: .infinity)
                 }
             }
         }
@@ -492,6 +525,7 @@ struct SessionSummaryCard: View {
 struct RecentWorkoutsCard: View {
     let workouts: [LoggedWorkout]
     @Binding var expanded: Set<UUID>
+    @EnvironmentObject private var store: WorkoutStore
 
     private var sortedWorkouts: [LoggedWorkout] {
         workouts.sorted { $0.startedAt > $1.startedAt }
@@ -513,10 +547,17 @@ struct RecentWorkoutsCard: View {
                                     .font(.caption)
                                     .foregroundStyle(AppTheme.faint)
                             }
-                            Spacer()
-                            Text("\(workout.exercises.count) exercises")
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.secondary)
+                        Spacer()
+                        Text("\(workout.exercises.count) exercises")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondary)
+                        Button {
+                            store.deleteLoggedWorkout(id: workout.id)
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                             Button {
                                 toggle(workout.id)
                             } label: {
@@ -526,27 +567,37 @@ struct RecentWorkoutsCard: View {
                         }
 
                         if expanded.contains(workout.id) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                ForEach(workout.exercises) { wExercise in
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(wExercise.exercise.name)
-                                            .font(.subheadline).fontWeight(.semibold)
-                                        ForEach(wExercise.sets) { set in
-                                            Text("\(set.reps) reps @ \(String(format: "%.1f kg", set.weight))")
-                                                .font(.caption)
-                                                .foregroundStyle(AppTheme.faint)
-                                        }
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(workout.exercises) { wExercise in
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Text(wExercise.exercise.name)
+                                        .font(.subheadline).fontWeight(.semibold)
+                                    Spacer()
+                                    Button {
+                                        store.deleteExerciseFromLogged(workoutID: workout.id, exerciseID: wExercise.id)
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .foregroundStyle(.red)
                                     }
-                                    .padding(10)
-                                    .background(AppTheme.card.opacity(0.55))
-                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                                ForEach(wExercise.sets) { set in
+                                    Text("\(set.reps) reps @ \(String(format: "%.1f kg", set.weight))")
+                                        .font(.caption)
+                                        .foregroundStyle(AppTheme.faint)
                                 }
                             }
-                            .padding(.top, 4)
+                            .padding(10)
+                            .background(AppTheme.card.opacity(0.55))
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                         }
                     }
-                    .padding(.vertical, 6)
+                    .padding(.top, 4)
                 }
+            }
+            .padding(.vertical, 6)
+        }
             }
         }
     }
@@ -570,34 +621,78 @@ struct ProgressChart: View {
     let exercise: Exercise
 
     var body: some View {
+        let sorted = exercise.history.sorted { $0.date < $1.date }
+        let volumeValues = sorted.map { $0.weight * Double($0.reps) }
         NeonCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("\(exercise.name) Weight")
+                Text("\(exercise.name) Progress")
                     .font(.headline)
-                Chart {
-                    ForEach(exercise.history.sorted { $0.date < $1.date }) { set in
-                        LineMark(
-                            x: .value("Date", set.date),
-                            y: .value("Weight", set.weight)
-                        )
-                        .interpolationMethod(.catmullRom)
+                HStack(spacing: 12) {
+                    Label("Weight", systemImage: "line.diagonal.arrow")
                         .foregroundStyle(AppTheme.accent)
-                        PointMark(
-                            x: .value("Date", set.date),
-                            y: .value("Weight", set.weight)
-                        )
+                        .font(.caption)
+                    Label("Volume", systemImage: "chart.bar.xaxis")
                         .foregroundStyle(AppTheme.secondary)
-                    }
+                        .font(.caption)
                 }
-                .chartYAxisLabel("kg")
-                .chartXAxis {
-                    AxisMarks(values: .stride(by: .day, count: 7)) { _ in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                ZStack {
+                    Chart {
+                        ForEach(sorted) { set in
+                            LineMark(
+                                x: .value("Date", set.date),
+                                y: .value("Weight", set.weight)
+                            )
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(AppTheme.accent)
+                            PointMark(
+                                x: .value("Date", set.date),
+                                y: .value("Weight", set.weight)
+                            )
+                            .foregroundStyle(AppTheme.accent)
+                        }
                     }
+                    .chartYAxis {
+                        AxisMarks(position: .leading) {
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel()
+                        }
+                    }
+                    .chartXAxis {
+                        AxisMarks(values: .stride(by: .day, count: 7)) { _ in
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                        }
+                    }
+
+                    Chart {
+                        ForEach(Array(zip(sorted, volumeValues)), id: \.0.id) { item in
+                            let set = item.0
+                            let volume = item.1
+                            LineMark(
+                                x: .value("Date", set.date),
+                                y: .value("Volume", volume)
+                            )
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(AppTheme.secondary)
+                            PointMark(
+                                x: .value("Date", set.date),
+                                y: .value("Volume", volume)
+                            )
+                            .foregroundStyle(AppTheme.secondary)
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks(position: .trailing) {
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel()
+                        }
+                    }
+                    .chartXAxis(.hidden)
                 }
-                .frame(height: 220)
+                .frame(height: 240)
             }
         }
     }
@@ -616,6 +711,7 @@ struct ProgressStats: View {
             StatTile(title: "Latest", value: latest.map { String(format: "%.1f kg x %d", $0.weight, $0.reps) } ?? "--")
             StatTile(title: "Sessions", value: "\(history.count)")
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -633,6 +729,7 @@ struct StatTile: View {
                     .font(.headline)
             }
         }
+        .frame(maxWidth: .infinity, minHeight: 80)
     }
 }
 
@@ -716,8 +813,8 @@ struct RestTimerView: View {
                     .padding(.vertical, 12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(AppTheme.card.opacity(0.8))
-                            .shadow(color: AppTheme.glow, radius: isRunning ? 14 : 0)
+                            .fill(AppTheme.card)
+                            .shadow(color: AppTheme.glow, radius: isRunning ? 8 : 0, y: 4)
                     )
                     .animation(.spring(response: 0.35, dampingFraction: 0.85), value: seconds)
 
@@ -737,9 +834,9 @@ struct RestTimerView: View {
                                 .padding(.vertical, 10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(selectedPreset == preset ? AppTheme.secondary.opacity(0.9) : AppTheme.card.opacity(0.7))
+                                        .fill(selectedPreset == preset ? AppTheme.accent.opacity(0.9) : AppTheme.card.opacity(0.85))
                                 )
-                                .foregroundStyle(selectedPreset == preset ? .black : AppTheme.faint)
+                                .foregroundStyle(selectedPreset == preset ? Color.white : AppTheme.faint)
                         }
                         .buttonStyle(PressableEffect())
                     }
@@ -783,6 +880,7 @@ struct RestTimerView: View {
 }
 
 struct NeonBackground<Content: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
     private let content: () -> Content
 
     init(@ViewBuilder content: @escaping () -> Content) {
@@ -791,11 +889,11 @@ struct NeonBackground<Content: View>: View {
 
     var body: some View {
         ZStack {
-            AppTheme.background
+            AppTheme.background(for: colorScheme)
                 .ignoresSafeArea()
             content()
-                .padding(.horizontal, 0)
-                .padding(.bottom, 16)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 20)
         }
     }
 }
@@ -815,10 +913,10 @@ struct NeonCard<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(AppTheme.card.opacity(0.9))
-                .shadow(color: AppTheme.glow, radius: 14, x: 0, y: 0)
+                .fill(AppTheme.card)
+                .shadow(color: AppTheme.glow, radius: 8, x: 0, y: 4)
         )
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 12)
     }
 }
 
@@ -829,13 +927,10 @@ struct NeonButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .frame(maxWidth: .infinity)
             .background(
-                LinearGradient(
-                    colors: [AppTheme.secondary, AppTheme.accent],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(AppTheme.accent)
             )
-            .foregroundStyle(.black)
+            .foregroundStyle(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .opacity(configuration.isPressed ? 0.8 : 1.0)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
@@ -853,10 +948,10 @@ struct OutlineButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(tint.opacity(configuration.isPressed ? 0.7 : 0.9), lineWidth: 1.5)
+                    .stroke(tint.opacity(configuration.isPressed ? 0.7 : 0.9), lineWidth: 1.25)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(AppTheme.card.opacity(0.7))
+                            .fill(AppTheme.card.opacity(0.85))
                     )
             )
             .foregroundStyle(tint)

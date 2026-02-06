@@ -6,12 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		16F738382EE5C3530005AC49 /* strive_icon_v1.icon in Resources */ = {isa = PBXBuildFile; fileRef = 16F738372EE5C3530005AC49 /* strive_icon_v1.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		1693388A2EE5EB0100764712 /* Strive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Strive.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		16E9D78A2EE4F62A00C7A5D9 /* Strive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Strive.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		16F738372EE5C3530005AC49 /* strive_icon_v1.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = strive_icon_v1.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1693388C2EE5EB0100764712 /* Strive */ = {
+		16E9D78C2EE4F62A00C7A5D9 /* Strive */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Strive;
 			sourceTree = "<group>";
@@ -19,7 +24,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		169338872EE5EB0100764712 /* Frameworks */ = {
+		16E9D7872EE4F62A00C7A5D9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +34,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		169338812EE5EB0100764712 = {
+		16E9D7812EE4F62A00C7A5D9 = {
 			isa = PBXGroup;
 			children = (
-				1693388C2EE5EB0100764712 /* Strive */,
-				1693388B2EE5EB0100764712 /* Products */,
+				16F738372EE5C3530005AC49 /* strive_icon_v1.icon */,
+				16E9D78C2EE4F62A00C7A5D9 /* Strive */,
+				16E9D78B2EE4F62A00C7A5D9 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1693388B2EE5EB0100764712 /* Products */ = {
+		16E9D78B2EE4F62A00C7A5D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1693388A2EE5EB0100764712 /* Strive.app */,
+				16E9D78A2EE4F62A00C7A5D9 /* Strive.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,74 +54,75 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		169338892EE5EB0100764712 /* Strive */ = {
+		16E9D7892EE4F62A00C7A5D9 /* Strive */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 169338952EE5EB0200764712 /* Build configuration list for PBXNativeTarget "Strive" */;
+			buildConfigurationList = 16E9D7952EE4F62B00C7A5D9 /* Build configuration list for PBXNativeTarget "Strive" */;
 			buildPhases = (
-				169338862EE5EB0100764712 /* Sources */,
-				169338872EE5EB0100764712 /* Frameworks */,
-				169338882EE5EB0100764712 /* Resources */,
+				16E9D7862EE4F62A00C7A5D9 /* Sources */,
+				16E9D7872EE4F62A00C7A5D9 /* Frameworks */,
+				16E9D7882EE4F62A00C7A5D9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1693388C2EE5EB0100764712 /* Strive */,
+				16E9D78C2EE4F62A00C7A5D9 /* Strive */,
 			);
 			name = Strive;
 			packageProductDependencies = (
 			);
 			productName = Strive;
-			productReference = 1693388A2EE5EB0100764712 /* Strive.app */;
+			productReference = 16E9D78A2EE4F62A00C7A5D9 /* Strive.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		169338822EE5EB0100764712 /* Project object */ = {
+		16E9D7822EE4F62A00C7A5D9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
-					169338892EE5EB0100764712 = {
+					16E9D7892EE4F62A00C7A5D9 = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
 				};
 			};
-			buildConfigurationList = 169338852EE5EB0100764712 /* Build configuration list for PBXProject "Strive" */;
+			buildConfigurationList = 16E9D7852EE4F62A00C7A5D9 /* Build configuration list for PBXProject "Strive" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 169338812EE5EB0100764712;
+			mainGroup = 16E9D7812EE4F62A00C7A5D9;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1693388B2EE5EB0100764712 /* Products */;
+			productRefGroup = 16E9D78B2EE4F62A00C7A5D9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				169338892EE5EB0100764712 /* Strive */,
+				16E9D7892EE4F62A00C7A5D9 /* Strive */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		169338882EE5EB0100764712 /* Resources */ = {
+		16E9D7882EE4F62A00C7A5D9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16F738382EE5C3530005AC49 /* strive_icon_v1.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		169338862EE5EB0100764712 /* Sources */ = {
+		16E9D7862EE4F62A00C7A5D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +132,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		169338932EE5EB0200764712 /* Debug */ = {
+		16E9D7932EE4F62B00C7A5D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -189,7 +196,7 @@
 			};
 			name = Debug;
 		};
-		169338942EE5EB0200764712 /* Release */ = {
+		16E9D7942EE4F62B00C7A5D9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -246,10 +253,10 @@
 			};
 			name = Release;
 		};
-		169338962EE5EB0200764712 /* Debug */ = {
+		16E9D7962EE4F62B00C7A5D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = strive_icon_v1;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -278,10 +285,10 @@
 			};
 			name = Debug;
 		};
-		169338972EE5EB0200764712 /* Release */ = {
+		16E9D7972EE4F62B00C7A5D9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = strive_icon_v1;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -313,25 +320,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		169338852EE5EB0100764712 /* Build configuration list for PBXProject "Strive" */ = {
+		16E9D7852EE4F62A00C7A5D9 /* Build configuration list for PBXProject "Strive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				169338932EE5EB0200764712 /* Debug */,
-				169338942EE5EB0200764712 /* Release */,
+				16E9D7932EE4F62B00C7A5D9 /* Debug */,
+				16E9D7942EE4F62B00C7A5D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		169338952EE5EB0200764712 /* Build configuration list for PBXNativeTarget "Strive" */ = {
+		16E9D7952EE4F62B00C7A5D9 /* Build configuration list for PBXNativeTarget "Strive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				169338962EE5EB0200764712 /* Debug */,
-				169338972EE5EB0200764712 /* Release */,
+				16E9D7962EE4F62B00C7A5D9 /* Debug */,
+				16E9D7972EE4F62B00C7A5D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 169338822EE5EB0100764712 /* Project object */;
+	rootObject = 16E9D7822EE4F62A00C7A5D9 /* Project object */;
 }
