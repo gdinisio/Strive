@@ -1,3 +1,10 @@
+//
+//  Models.swift
+//  Strive
+//
+//  Created by Giovanni Di Nisio on 07/12/2025.
+//
+
 import Foundation
 import SwiftUI
 import Combine
@@ -211,8 +218,8 @@ enum AppTheme {
         if scheme == .dark {
             return LinearGradient(
                 colors: [
-                    Color(red: 0.1, green: 0.11, blue: 0.13),
-                    Color(red: 0.12, green: 0.13, blue: 0.16)
+                    Color(red: 0.1, green: 0.1, blue: 0.1),
+                    Color(red: 0.15, green: 0.15, blue: 0.16)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
