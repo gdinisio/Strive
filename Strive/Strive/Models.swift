@@ -12,18 +12,6 @@ enum MuscleGroup: String, CaseIterable, Identifiable, Codable {
     case fullBody = "Full Body"
 
     var id: String { rawValue }
-
-    var icon: String {
-        switch self {
-        case .chest: return "burst.fill"
-        case .back: return "triangle.fill"
-        case .legs: return "figure.run.circle.fill"
-        case .shoulders: return "circle.grid.2x2.fill"
-        case .arms: return "flame.fill"
-        case .core: return "circle.hexagonpath.fill"
-        case .fullBody: return "bolt.heart.fill"
-        }
-    }
 }
 
 struct WorkoutSet: Identifiable, Hashable, Codable {
@@ -174,8 +162,6 @@ final class WorkoutStore: ObservableObject {
         exercise.latestSet?.weight
     }
 
-    // MARK: - Persistence
-
     private func setupPersistence() {
         Publishers.CombineLatest3($exercises, $history, $activeWorkout)
             .dropFirst()
@@ -246,7 +232,6 @@ enum AppTheme {
     static let accent = Color(red: 0.18, green: 0.58, blue: 0.98)
     static let secondary = Color(red: 0.12, green: 0.7, blue: 0.75)
     static let card = Color(.secondarySystemBackground)
-
     static let glow = Color.black.opacity(0.08)
     static let faint = Color(.secondaryLabel)
 }

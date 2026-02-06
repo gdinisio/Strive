@@ -39,7 +39,7 @@ struct StartWorkoutView: View {
     var body: some View {
         NeonBackground {
             ScrollView {
-                VStack(spacing: 18) {
+                VStack(spacing: 0) {
                     HeaderCard
                     if let workout = store.activeWorkout {
                         SessionSummaryCard(workout: workout)
@@ -53,27 +53,39 @@ struct StartWorkoutView: View {
                                 }
                             )
                         }
-
+                        
                         Button {
                             showExercisePicker = true
                         } label: {
                             Label("Add Exercise", systemImage: "plus.circle")
                                 .fontWeight(.semibold)
+                                .dynamicTypeSize(.xLarge)
+                                .frame(maxWidth: .infinity)
+                                .frame(idealHeight: 30)
                         }
-                        .buttonStyle(NeonButtonStyle())
-                        .frame(idealWidth: 260, maxWidth: .infinity)
-                        .padding(.top, 4)
-
+                        .buttonStyle(.glassProminent)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .buttonBorderShape(.roundedRectangle(radius: 12))
+                        
+                        
                         Button(role: .destructive) {
                             store.endWorkout()
                         } label: {
+                            
                             Label("Finish Workout", systemImage: "flag.checkered")
                                 .fontWeight(.semibold)
+                                .dynamicTypeSize(.xLarge)
+                                .frame(maxWidth: .infinity)
+                                .frame(idealHeight: 30)
                         }
-                        .buttonStyle(OutlineButtonStyle(tint: .red))
-                        .tint(.red)
-                        .frame(idealWidth: 260, maxWidth: .infinity)
-                        .padding(.top, 8)
+                        .buttonStyle(.glassProminent)
+                        .tint(AppTheme.secondary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .buttonBorderShape(.roundedRectangle(radius: 12))
+                        
+                        
                     } else {
                         HeroCard
                             .padding(.top, -6)
@@ -97,7 +109,7 @@ struct StartWorkoutView: View {
     }
 
     private var HeaderCard: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(alignment: .center) {
                     VStack(alignment: .leading, spacing: 6) {
@@ -112,11 +124,12 @@ struct StartWorkoutView: View {
                         .font(.system(size: 64, weight: .bold))
                         .foregroundStyle(AppTheme.accent)
                         .shadow(color: AppTheme.glow, radius: 16, x: 0, y: 0)
+                        .glassEffect(.clear.interactive())
                 }
-
                 if store.activeWorkout != nil {
+                    Divider()
                     HStack(spacing: 12) {
-                        Image(systemName: "clock.arrow.circlepath")
+                        Image(systemName: "ellipses.bubble")
                             .foregroundStyle(AppTheme.accent)
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Session Live")
@@ -130,11 +143,11 @@ struct StartWorkoutView: View {
                 }
             }
         }
-        .frame(height: 200)
+        .padding(.vertical)
     }
 
     private var RestTimerCard: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Text("Rest Timer")
@@ -150,7 +163,7 @@ struct StartWorkoutView: View {
     }
 
     private var HeroCard: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Ready to lift?")
                     .font(.title2).fontWeight(.bold)
@@ -165,8 +178,10 @@ struct StartWorkoutView: View {
                     Label("Start Workout", systemImage: "play.fill")
                         .fontWeight(.semibold)
                         .padding(.horizontal, 12)
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(NeonButtonStyle())
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.roundedRectangle(radius: 8))
             }
         }
         .frame(height: 180)
@@ -193,7 +208,7 @@ struct WorkoutExerciseCard: View {
     }
 
     var body: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .top, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -204,26 +219,34 @@ struct WorkoutExerciseCard: View {
                             .foregroundStyle(AppTheme.secondary)
                     }
                     Spacer()
-                    HStack(spacing: 6) {
+                    HStack(spacing: 0) {
+
                         Button {
-                            store.removeExerciseFromActive(id: workoutExercise.id)
+                            withAnimation{
+                                store.removeExerciseFromActive(id: workoutExercise.id)
+                            }
                         } label: {
                             Image(systemName: "trash")
-                                .foregroundStyle(.red)
+                                .foregroundStyle(Color.red)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Text("Add")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.faint)
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
+                        
                         Button {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                                 showAddForm.toggle()
                             }
                         } label: {
-                            Image(systemName: showAddForm ? "xmark.circle.fill" : "plus.circle.fill")
-                                .foregroundStyle(AppTheme.secondary)
-                                .font(.title3)
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(showAddForm ? Color.red: AppTheme.accent)
+                                .font(.title2)
+                                .rotationEffect(.degrees(showAddForm ? 45 : 0))
+                                .animation(Animation.easeInOut(duration: 0.3), value: showAddForm)
                         }
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
+                        .dynamicTypeSize(.large)
+                        
                     }
                 }
 
@@ -259,9 +282,10 @@ struct WorkoutExerciseCard: View {
                                     store.deleteSet(workoutExerciseID: workoutExercise.id, setID: set.id)
                                 } label: {
                                     Image(systemName: "trash")
-                                        .foregroundStyle(.red)
+                                        .foregroundStyle(AppTheme.secondary)
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .buttonStyle(.glass)
+                                .buttonBorderShape(.circle)
                             }
                             .padding(10)
                             .background(AppTheme.card.opacity(0.6))
@@ -269,20 +293,6 @@ struct WorkoutExerciseCard: View {
                         }
                     }
                 }
-
-                Button(showAddForm ? "Save Set" : "Add Set") {
-                    if showAddForm {
-                        addSet(weightSelection, repsSelection)
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                            showAddForm = false
-                        }
-                    } else {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                            showAddForm = true
-                        }
-                    }
-                }
-                .buttonStyle(NeonButtonStyle())
             }
         }
     }
@@ -298,8 +308,6 @@ struct AddSetInline: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Log set")
-                .font(.subheadline).fontWeight(.semibold)
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Weight")
@@ -331,10 +339,15 @@ struct AddSetInline: View {
                     .frame(height: 120)
                 }
             }
-            Button("Log Set") {
+            Button {
                 onSave()
+            } label: {
+                Label("Log set", systemImage: "plus.circle.dashed")
+                .frame(maxWidth: .infinity)
             }
-            .buttonStyle(NeonButtonStyle())
+            .buttonStyle(.glassProminent)
+            .buttonBorderShape(.roundedRectangle(radius: 9))
+            .tint(AppTheme.accent)
         }
         .padding()
         .background(
@@ -357,15 +370,18 @@ struct ExercisesView: View {
     var body: some View {
         NeonBackground {
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Exercises")
                         .font(.largeTitle).fontWeight(.black)
+                        .fontDesign(.rounded)
                         .padding(.horizontal, 16)
-                    Text("Everything you have logged, sorted by muscle group.")
+                    Text("Sorted by muscle group.")
                         .font(.callout)
                         .foregroundStyle(AppTheme.faint)
                         .padding(.horizontal, 16)
 
+                    Divider()
+                    
                     ForEach(groupedExercises, id: \.0) { group, exercises in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(group.rawValue)
@@ -392,14 +408,14 @@ struct ExerciseRow: View {
     var onDelete: (() -> Void)?
 
     var body: some View {
-        NeonCard {
+        Card {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(exercise.name)
                         .font(.headline)
                     Text(exercise.muscleGroup.rawValue)
                         .font(.caption)
-                        .foregroundStyle(AppTheme.secondary)
+                        .foregroundStyle(AppTheme.accent)
                     if let latest = exercise.latestSet {
                         Text("Last: \(String(format: "%.1f", latest.weight)) kg × \(latest.reps)")
                             .font(.caption)
@@ -416,8 +432,10 @@ struct ExerciseRow: View {
                         onDelete()
                     } label: {
                         Image(systemName: "trash")
+                            .foregroundStyle(Color.red)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }
             }
         }
@@ -438,10 +456,11 @@ struct ProgressViewScreen: View {
     var body: some View {
         NeonBackground {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Progress")
                             .font(.largeTitle).fontWeight(.black)
+                            .fontDesign(.rounded)
                         Spacer()
                         Menu {
                             ForEach(store.exercises) { exercise in
@@ -452,19 +471,19 @@ struct ProgressViewScreen: View {
                         } label: {
                             Label(selectedExercise?.name ?? "Pick exercise", systemImage: "line.3.horizontal.decrease")
                         }
-                        .tint(AppTheme.secondary)
+                        .tint(AppTheme.accent)
                     }
                     .padding(.horizontal, 16)
                     Text("Track weight across time for each movement.")
                         .font(.callout)
                         .foregroundStyle(AppTheme.faint)
                         .padding(.horizontal, 16)
-
+                    Divider()
                     if let exercise = selectedExercise, !exercise.history.isEmpty {
                         ProgressChart(exercise: exercise)
                         ProgressStats(exercise: exercise)
                     } else {
-                        NeonCard {
+                        Card {
                             VStack(spacing: 8) {
                                 Text("No data yet")
                                     .font(.headline)
@@ -499,7 +518,7 @@ struct SessionSummaryCard: View {
     }
 
     var body: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Text("Session Overview")
@@ -509,7 +528,7 @@ struct SessionSummaryCard: View {
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondary)
                 }
-                HStack(spacing: 0) {
+                HStack(spacing: 15) {
                     StatTile(title: "Count", value: "\(exerciseCount)")
                         .frame(maxWidth: .infinity)
                     StatTile(title: "Sets", value: "\(setCount)")
@@ -532,47 +551,58 @@ struct RecentWorkoutsCard: View {
     }
 
     var body: some View {
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Recent Workouts")
                     .font(.headline)
 
                 ForEach(Array(sortedWorkouts.prefix(5))) { workout in
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack {
+                        HStack(spacing: -2) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(workout.startedAt, format: .dateTime.month(.abbreviated).day().hour().minute())
                                     .font(.subheadline).fontWeight(.semibold)
+                                Text(workout.exercises.count == 1 ? "1 Exercise" : "\(workout.exercises.count) Exercises")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.secondary)
+                                .padding(.trailing, 5)
                                 Text(durationString(workout.duration))
                                     .font(.caption)
                                     .foregroundStyle(AppTheme.faint)
+                                
                             }
+                            
                         Spacer()
-                        Text("\(workout.exercises.count) exercises")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondary)
+                            
+                            
                         Button {
                             store.deleteLoggedWorkout(id: workout.id)
                         } label: {
                             Image(systemName: "trash")
                                 .foregroundStyle(.red)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                            Button {
-                                toggle(workout.id)
-                            } label: {
-                                Image(systemName: expanded.contains(workout.id) ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                                    .foregroundStyle(AppTheme.secondary)
-                            }
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
+                            
+                        Button {
+                            toggle(workout.id)
+                        } label: {
+                            Image(systemName: "chevron.down.circle.fill")
+                                .rotationEffect(.degrees(expanded.contains(workout.id) ? 180 : 0))
+                                .foregroundStyle(AppTheme.secondary)
+                        }
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
                         }
 
                         if expanded.contains(workout.id) {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(workout.exercises) { wExercise in
-                            VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: -2) {
                                 HStack {
                                     Text(wExercise.exercise.name)
                                         .font(.subheadline).fontWeight(.semibold)
+                                        .foregroundStyle(AppTheme.accent)
                                     Spacer()
                                     Button {
                                         store.deleteExerciseFromLogged(workoutID: workout.id, exerciseID: wExercise.id)
@@ -580,17 +610,20 @@ struct RecentWorkoutsCard: View {
                                         Image(systemName: "trash")
                                             .foregroundStyle(.red)
                                     }
-                                    .buttonStyle(PlainButtonStyle())
+                                    .buttonStyle(.glass)
+                                    .buttonBorderShape(.circle)
                                 }
                                 ForEach(wExercise.sets) { set in
                                     Text("\(set.reps) reps @ \(String(format: "%.1f kg", set.weight))")
                                         .font(.caption)
                                         .foregroundStyle(AppTheme.faint)
+                                        .padding(.vertical, 1)
                                 }
                             }
                             .padding(10)
                             .background(AppTheme.card.opacity(0.55))
                             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .shadow(radius: 2)
                         }
                     }
                     .padding(.top, 4)
@@ -623,7 +656,7 @@ struct ProgressChart: View {
     var body: some View {
         let sorted = exercise.history.sorted { $0.date < $1.date }
         let volumeValues = sorted.map { $0.weight * Double($0.reps) }
-        NeonCard {
+        Card {
             VStack(alignment: .leading, spacing: 12) {
                 Text("\(exercise.name) Progress")
                     .font(.headline)
@@ -703,12 +736,10 @@ struct ProgressStats: View {
 
     var body: some View {
         let history = exercise.history.sorted { $0.date < $1.date }
-        let latest = history.last
         let best = history.max(by: { $0.weight < $1.weight })
 
-        HStack(spacing: 12) {
+        HStack() {
             StatTile(title: "Best", value: best.map { String(format: "%.1f kg", $0.weight) } ?? "--")
-            StatTile(title: "Latest", value: latest.map { String(format: "%.1f kg x %d", $0.weight, $0.reps) } ?? "--")
             StatTile(title: "Sessions", value: "\(history.count)")
         }
         .frame(maxWidth: .infinity)
@@ -720,16 +751,21 @@ struct StatTile: View {
     let value: String
 
     var body: some View {
-        NeonCard {
-            VStack(alignment: .leading, spacing: 6) {
+        Button {
+        } label: {
+            VStack(alignment: .center, spacing: 6) {
                 Text(title.uppercased())
                     .font(.caption2)
                     .foregroundStyle(AppTheme.faint)
                 Text(value)
                     .font(.headline)
             }
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity, minHeight: 80)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.roundedRectangle(radius: 17))
+        
     }
 }
 
@@ -762,6 +798,8 @@ struct ExercisePickerSheet: View {
                                     Spacer()
                                     Text(exercise.latestSet?.weight ?? 0, format: .number.precision(.fractionLength(0...1)))
                                         .foregroundStyle(AppTheme.faint)
+                                    Text("kg")
+                                        .foregroundStyle(AppTheme.faint)
                                 }
                             }
                             .foregroundStyle(.primary)
@@ -770,12 +808,19 @@ struct ExercisePickerSheet: View {
                 }
 
                 Section("Create New") {
-                    TextField("Exercise name", text: $newName)
+                    TextField(text: $newName) {
+                        Text("Exercise name")
+                            .font(.none)
+                            .fontWeight(.none)
+                    }
+                    .fontWeight(.semibold)
+                    .foregroundStyle(AppTheme.secondary)
                     Picker("Muscle group", selection: $selectedGroup) {
                         ForEach(MuscleGroup.allCases) { group in
                             Text(group.rawValue).tag(group)
                         }
                     }
+                    
                     Button {
                         guard !newName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                         let created = store.addNewExercise(name: newName, muscleGroup: selectedGroup)
@@ -784,39 +829,45 @@ struct ExercisePickerSheet: View {
                         dismiss()
                     } label: {
                         Label("Save & Add", systemImage: "plus.circle.fill")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
                     }
+                    .buttonStyle(.glassProminent)
                 }
             }
             .navigationTitle("Add Exercise")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
-                }
             }
         }
     }
-}
 
 struct RestTimerView: View {
-    @State private var seconds: Int = 90
+    @State private var seconds: Int = 60
     @State private var isRunning: Bool = false
-    @State private var selectedPreset: Int = 90
+    @State private var selectedPreset: Int = 60
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    private let presets: [Int] = [60, 90, 120]
+    private let presets: [Int] = [30, 60, 90]
 
     var body: some View {
         VStack(spacing: 12) {
             VStack(spacing: 8) {
-                Text(timeString)
-                    .font(.system(.title, design: .rounded, weight: .bold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(AppTheme.card)
-                            .shadow(color: AppTheme.glow, radius: isRunning ? 8 : 0, y: 4)
-                    )
-                    .animation(.spring(response: 0.35, dampingFraction: 0.85), value: seconds)
+                Button {
+                    
+                } label: {
+                    Text(timeString)
+                        .frame(maxWidth: .infinity)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .fontDesign(.rounded)
+                        .foregroundStyle(Color.primary)
+                        .padding(.vertical, 8)
+                    
+                }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.roundedRectangle(radius: 10))
+                .animation(.spring(response: 0.35, dampingFraction: 0.85), value: seconds)
 
                 HStack(spacing: 10) {
                     ForEach(presets, id: \.self) { preset in
@@ -828,32 +879,41 @@ struct RestTimerView: View {
                             }
                         } label: {
                             Text(presetString(preset))
-                                .font(.caption)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(selectedPreset == preset ? AppTheme.accent.opacity(0.9) : AppTheme.card.opacity(0.85))
-                                )
-                                .foregroundStyle(selectedPreset == preset ? Color.white : AppTheme.faint)
+                                .padding(.vertical, selectedPreset == preset ? 8 : 10)
+                                .foregroundStyle(selectedPreset == preset ? AppTheme.accent : AppTheme.faint)
+                                .font(selectedPreset == preset ? .system(.title3) : .system(.caption))
                         }
-                        .buttonStyle(PressableEffect())
+                        .buttonStyle(.glass)
+
+                        
+                        .buttonBorderShape(selectedPreset == preset ? .roundedRectangle(radius: 20) : .capsule)
                     }
                 }
             }
 
             HStack(spacing: 12) {
-                Button(isRunning ? "Pause" : "Start") {
+                Button {
                     isRunning.toggle()
+                } label: {
+                    Label(isRunning ? "Pause" : "Start" , systemImage: isRunning ? "pause.fill" : "play.fill")
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(NeonButtonStyle())
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.roundedRectangle(radius : 10))
+                .tint(isRunning ? AppTheme.secondary : AppTheme.accent)
 
-                Button("Reset") {
+                Button {
                     seconds = selectedPreset
                     isRunning = false
+                } label: {
+                    Label("Reset", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(Color.red)
                 }
-                .buttonStyle(OutlineButtonStyle(tint: AppTheme.secondary))
+                .buttonStyle(.glass)
+                .buttonBorderShape(.roundedRectangle(radius : 10))
             }
         }
         .onReceive(timer) { _ in
@@ -898,7 +958,7 @@ struct NeonBackground<Content: View>: View {
     }
 }
 
-struct NeonCard<Content: View>: View {
+struct Card<Content: View>: View {
     private let content: () -> Content
 
     init(@ViewBuilder content: @escaping () -> Content) {
@@ -913,59 +973,11 @@ struct NeonCard<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(AppTheme.card)
-                .shadow(color: AppTheme.glow, radius: 8, x: 0, y: 4)
+                .fill(.ultraThickMaterial)
+                .shadow(color: .black.opacity(0.2),
+                        radius: 6, x: 0, y: 3)
         )
         .padding(.horizontal, 12)
-    }
-}
-
-struct NeonButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.vertical, 10)
-            .padding(.horizontal, 14)
-            .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(AppTheme.accent)
-            )
-            .foregroundStyle(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .opacity(configuration.isPressed ? 0.8 : 1.0)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.8), value: configuration.isPressed)
-    }
-}
-
-struct OutlineButtonStyle: ButtonStyle {
-    var tint: Color = AppTheme.secondary
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.vertical, 10)
-            .padding(.horizontal, 14)
-            .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(tint.opacity(configuration.isPressed ? 0.7 : 0.9), lineWidth: 1.25)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(AppTheme.card.opacity(0.85))
-                    )
-            )
-            .foregroundStyle(tint)
-            .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.8), value: configuration.isPressed)
-    }
-}
-
-struct PressableEffect: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
-            .opacity(configuration.isPressed ? 0.9 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.85), value: configuration.isPressed)
+        .padding(.vertical, 8)
     }
 }
