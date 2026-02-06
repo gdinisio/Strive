@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 //
 //  Models.swift
 //  Strive
@@ -5,11 +7,16 @@
 //  Created by Giovanni Di Nisio on 07/12/2025.
 //
 
+>>>>>>> d32ae75 (version 2)
 import Foundation
 import SwiftUI
 import Combine
 
+<<<<<<< HEAD
+enum MuscleGroup: String, CaseIterable, Identifiable {
+=======
 enum MuscleGroup: String, CaseIterable, Identifiable, Codable {
+>>>>>>> d32ae75 (version 2)
     case chest = "Chest"
     case back = "Back"
     case legs = "Legs"
@@ -19,17 +26,41 @@ enum MuscleGroup: String, CaseIterable, Identifiable, Codable {
     case fullBody = "Full Body"
 
     var id: String { rawValue }
+<<<<<<< HEAD
+
+    var icon: String {
+        switch self {
+        case .chest: return "burst.fill"
+        case .back: return "triangle.fill"
+        case .legs: return "figure.run.circle.fill"
+        case .shoulders: return "circle.grid.2x2.fill"
+        case .arms: return "flame.fill"
+        case .core: return "circle.hexagonpath.fill"
+        case .fullBody: return "bolt.heart.fill"
+        }
+    }
+}
+
+struct WorkoutSet: Identifiable, Hashable {
+    let id = UUID()
+=======
 }
 
 struct WorkoutSet: Identifiable, Hashable, Codable {
     var id: UUID = UUID()
+>>>>>>> d32ae75 (version 2)
     var date: Date
     var weight: Double
     var reps: Int
 }
 
+<<<<<<< HEAD
+struct Exercise: Identifiable, Hashable {
+    let id = UUID()
+=======
 struct Exercise: Identifiable, Hashable, Codable {
     var id: UUID = UUID()
+>>>>>>> d32ae75 (version 2)
     var name: String
     var muscleGroup: MuscleGroup
     var history: [WorkoutSet]
@@ -39,14 +70,24 @@ struct Exercise: Identifiable, Hashable, Codable {
     }
 }
 
+<<<<<<< HEAD
+struct WorkoutExercise: Identifiable, Hashable {
+    let id = UUID()
+=======
 struct WorkoutExercise: Identifiable, Hashable, Codable {
     var id: UUID = UUID()
+>>>>>>> d32ae75 (version 2)
     var exercise: Exercise
     var sets: [WorkoutSet]
 }
 
+<<<<<<< HEAD
+struct LoggedWorkout: Identifiable, Hashable {
+    let id = UUID()
+=======
 struct LoggedWorkout: Identifiable, Hashable, Codable {
     var id: UUID = UUID()
+>>>>>>> d32ae75 (version 2)
     var startedAt: Date
     var endedAt: Date
     var exercises: [WorkoutExercise]
@@ -56,8 +97,13 @@ struct LoggedWorkout: Identifiable, Hashable, Codable {
     }
 }
 
+<<<<<<< HEAD
+struct ActiveWorkout: Identifiable {
+    let id = UUID()
+=======
 struct ActiveWorkout: Identifiable, Codable {
     var id: UUID = UUID()
+>>>>>>> d32ae75 (version 2)
     var startedAt: Date = Date()
     var exercises: [WorkoutExercise] = []
 }
@@ -66,6 +112,12 @@ final class WorkoutStore: ObservableObject {
     @Published var exercises: [Exercise]
     @Published var activeWorkout: ActiveWorkout?
     @Published var history: [LoggedWorkout]
+<<<<<<< HEAD
+
+    init(exercises: [Exercise] = [], history: [LoggedWorkout] = []) {
+        self.exercises = exercises
+        self.history = history
+=======
     private var cancellables: Set<AnyCancellable> = []
     private let persistenceURL: URL = {
         let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first ?? URL(fileURLWithPath: NSTemporaryDirectory())
@@ -83,6 +135,7 @@ final class WorkoutStore: ObservableObject {
             self.activeWorkout = nil
         }
         setupPersistence()
+>>>>>>> d32ae75 (version 2)
     }
 
     func startWorkout() {
@@ -135,6 +188,30 @@ final class WorkoutStore: ObservableObject {
         }
     }
 
+<<<<<<< HEAD
+    func latestWeight(for exercise: Exercise) -> Double? {
+        exercise.latestSet?.weight
+    }
+}
+
+enum AppTheme {
+    static let background = LinearGradient(
+        colors: [
+            Color(red: 0.03, green: 0.04, blue: 0.1),
+            Color(red: 0.05, green: 0.07, blue: 0.15),
+            Color(red: 0.06, green: 0.08, blue: 0.2)
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let accent = Color(red: 0.35, green: 0.9, blue: 0.75)
+    static let secondary = Color(red: 0.56, green: 0.6, blue: 0.97)
+    static let card = Color(red: 0.12, green: 0.15, blue: 0.25)
+
+    static let glow = Color(red: 0.4, green: 0.9, blue: 0.8).opacity(0.28)
+    static let faint = Color.white.opacity(0.25)
+=======
     func deleteSet(workoutExerciseID: UUID, setID: UUID) {
         guard var active = activeWorkout else { return }
         guard let exerciseIndex = active.exercises.firstIndex(where: { $0.id == workoutExerciseID }) else { return }
@@ -241,6 +318,7 @@ enum AppTheme {
     static let card = Color(.secondarySystemBackground)
     static let glow = Color.black.opacity(0.08)
     static let faint = Color(.secondaryLabel)
+>>>>>>> d32ae75 (version 2)
 }
 
 extension WorkoutStore {
